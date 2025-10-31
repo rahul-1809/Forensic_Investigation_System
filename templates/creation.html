@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Composite Sketch Creator | Forensic Intelligence</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="page-creation">
+    <nav class="navbar">
+        <div class="nav-left">
+            <div class="nav-logo">FI</div>
+            <div class="nav-title">Forensic AI</div>
+        </div>
+        <div class="nav-links">
+            <a class="nav-link" href="/">Home</a>
+            <a class="nav-link" href="/creation">Create</a>
+            <a class="nav-link" href="/recognition">Recognize</a>
+        </div>
+    </nav>
+
+    <div id="app-container">
+        <div id="palette">
+            <h1>Features</h1>
+        </div>
+        <div id="canvas"></div>
+    </div>
+
+    <div id="action-buttons">
+        <button id="delete-btn">Delete</button>
+        <button id="save-btn">Save Image</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="{{ url_for('static', filename='js/file-list.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+        (function(){
+            const path = window.location.pathname;
+            document.querySelectorAll('.nav-link').forEach(a=>{
+                if(a.getAttribute('href')===path) a.classList.add('active');
+            });
+        })();
+    </script>
+</body>
+</html>

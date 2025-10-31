@@ -1,0 +1,42 @@
+.venv/
+venv/
+.env
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+.DS_Store
+.vscode/
+.idea/
+node_modules/
+
+# Data and generated databases
+face_db.pkl
+component_db.pkl
+data/uploads/
+data/sketches/
+
+# Logs and temporary files
+*.log
+*.tmp
+
+# Mac/OSX
+.AppleDouble
+.LSOverride
+
+# Python virtual envs
+env/
+ENV/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Coverage
+.coverage
+.pytest_cache/
+
+# Editor backups
+*~
+*.swp
+*** End Patch

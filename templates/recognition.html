@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recognition Portal | Forensic Intelligence</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="page-portal">
+    <nav class="navbar">
+        <div class="nav-left">
+            <div class="nav-logo">FI</div>
+            <div class="nav-title">Forensic AI</div>
+        </div>
+        <div class="nav-links">
+            <a class="nav-link" href="/">Home</a>
+            <a class="nav-link" href="/creation">Create</a>
+            <a class="nav-link" href="/recognition">Recognize</a>
+        </div>
+    </nav>
+
+    <div class="portal-container">
+        <h1>Recognition & Database Portal</h1>
+
+        <div class="portal-module">
+            <h2>� Analyze a Sketch</h2>
+            <p>Upload a composite sketch to find a match in the database.</p>
+            <form id="recognize-form">
+                <input type="file" id="sketch-file" name="sketch" accept="image/*" required>
+                <button type="submit" class="button">Recognize</button>
+            </form>
+            <!-- Results are shown directly under the recognize form for better UX -->
+            <div id="results-container" class="hidden">
+                <h2>Analysis Result</h2>
+                <div id="results-content"></div>
+            </div>
+        </div>
+
+        <div class="portal-module">
+            <h2>Component Recognition</h2>
+            <p>Upload a single facial component sketch (eyes / nose / mouth) to search the database.</p>
+            <form id="recognize-component-form">
+                <label for="component-type">Part:</label>
+                <select id="component-type" name="part" required>
+                    <option value="eyes">Eyes</option>
+                    <option value="nose">Nose</option>
+                    <option value="mouth">Mouth</option>
+                </select>
+                <input type="file" id="component-sketch-file" name="sketch" accept="image/*" required>
+                <button type="submit" class="button">Recognize Component</button>
+            </form>
+            <div id="results-component-container" class="hidden">
+                <h2>Component Result</h2>
+                <div id="results-component-content"></div>
+            </div>
+        </div>
+
+        <div class="portal-module">
+            <h2>�📋 Database Management</h2>
+            <p>Add a new person to the criminal database.</p>
+            <form id="add-person-form">
+                <div class="form-grid">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required placeholder="Enter full name">
+                    
+                    <label for="age">Age:</label>
+                    <input type="number" id="age" name="age" required placeholder="Enter age">
+
+                    <label for="photo-file">Photo:</label>
+                    <input type="file" id="photo-file" name="photo" accept="image/*" required>
+                
+                    <label for="record">Criminal Record:</label>
+                    <textarea id="record" name="record" rows="3" required placeholder="Enter criminal record details"></textarea>
+                </div>
+                <button type="submit" class="button">Add to Database</button>
+            </form>
+        </div>
+
+        
+    </div>
+    <script src="{{ url_for('static', filename='js/recognition.js') }}"></script>
+    <script>
+        (function(){
+            const path = window.location.pathname;
+            document.querySelectorAll('.nav-link').forEach(a=>{
+                if(a.getAttribute('href')===path) a.classList.add('active');
+            });
+        })();
+    </script>
+</body>
+</html>
