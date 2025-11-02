@@ -105,6 +105,29 @@ Troubleshooting
 - Component DB build fails
   - `build_component_db.py` requires `mediapipe` and `opencv-python`. Install them and run the script; debug logs will show which images failed to produce landmarks.
 
+Authentication
+--------------
+- The app includes a simple SQLite-backed auth system (Flask-Login + SQLAlchemy).
+- The DB file is `auth.db` (created automatically when the app first runs).
+- To create an admin user from the command line use the helper script:
+
+  python scripts/create_admin.py --username admin --password 'YourStrongPassword'
+
+  After creating the user you can sign in at /login and access the protected pages (`/creation`, `/recognition`, and API endpoints).
+
+Push to GitHub
+--------------
+- This repository can be pushed using either HTTPS or SSH. Example (HTTPS):
+
+  git add .
+  git commit -m "docs: update README and gitignore"
+  git push origin main
+
+- If you hit authentication errors when pushing:
+  - Use SSH by adding an SSH key to GitHub (recommended for frequent pushes): https://docs.github.com/en/authentication/connecting-to-github-with-ssh
+  - Or configure a personal access token (PAT) for HTTPS pushes (replace your password with the token when prompted).
+
+
 Developer notes
 ---------------
 - Source of truth for embeddings:

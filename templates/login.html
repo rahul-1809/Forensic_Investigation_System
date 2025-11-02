@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login — Forensic AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  </head>
+  <body class="page-portal page-login">
+    <!-- decorative orbs and scanline to match hub look -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="scanline"></div>
+
+    <!-- Top navigation (shared with the rest of the app) -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <div class="nav-logo">FI</div>
+            <div class="nav-title">Forensic AI</div>
+        </div>
+        <div class="nav-links">
+            <a class="nav-link" href="/">Home</a>
+            <a class="nav-link" href="/creation">Create</a>
+            <a class="nav-link" href="/recognition">Recognize</a>
+                {% if current_user.is_authenticated %}
+                    <a class="nav-link" href="{{ url_for('logout') }}">Logout ({{ current_user.username }})</a>
+                {% else %}
+                    <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                {% endif %}
+        </div>
+    </nav>
+
+    <main id="app-container">
+      <div id="canvas" style="display:flex; align-items:center; justify-content:center;">
+        <div class="login-panel">
+          <div class="panel-header">
+            <div class="panel-logo">FI</div>
+            <h2>Sign in</h2>
+            <p class="hint">Enter your credentials to access the recognition dashboard.</p>
+          </div>
+
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              <ul class="flashes">
+                {% for category, message in messages %}
+                  <li class="flash {{ category }}">{{ message }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          {% endwith %}
+
+          <form method="post" action="{{ url_for('login') }}" class="login-form">
+            <label for="username">Username</label>
+            <input id="username" name="username" type="text" required class="input-field">
+
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" required class="input-field">
+
+            <input type="hidden" name="next" value="{{ request.args.get('next') or request.form.get('next') }}">
+
+            <div class="form-actions">
+              <button type="submit" class="button primary">Sign in</button>
+              <a href="/" class="button ghost">Back</a>
+            </div>
+          </form>
+
+          <div class="panel-footer">
+            <small>Contact the administrator to create users.</small>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      (function(){
+          const path = window.location.pathname;
+          document.querySelectorAll('.nav-link').forEach(a=>{
+              if(a.getAttribute('href')===path) a.classList.add('active');
+          });
+      })();
+    </script>
+  </body>
+</html>

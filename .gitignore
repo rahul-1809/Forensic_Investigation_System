@@ -16,6 +16,7 @@ face_db.pkl
 component_db.pkl
 data/uploads/
 data/sketches/
+auth.db
 
 # Logs and temporary files
 *.log

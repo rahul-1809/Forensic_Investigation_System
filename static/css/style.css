@@ -400,6 +400,58 @@ body.page-portal {
     box-shadow: 0 8px 30px rgba(57, 255, 20, 0.6);
 }
 
+/* ========================================
+   LOGIN PANEL (matches the app theme)
+   ======================================== */
+.login-panel {
+    width: 420px;
+    max-width: calc(100% - 48px);
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 14px;
+    padding: 28px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6), var(--shadow-glow);
+    backdrop-filter: blur(12px) saturate(150%);
+    color: var(--text-primary);
+    z-index: 60;
+}
+
+.panel-header { text-align: center; margin-bottom: 18px; }
+.panel-logo {
+    width:56px; height:56px; margin:0 auto 12px; border-radius:12px;
+    background: linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta));
+    display:flex; align-items:center; justify-content:center; color:#071022; font-weight:800;
+    font-family: 'Orbitron', monospace; box-shadow: 0 8px 30px rgba(0,240,255,0.12);
+}
+.panel-header h2 { font-family:'Orbitron', monospace; margin: 6px 0 4px; font-size:22px; letter-spacing:1px; }
+.hint { color: var(--text-secondary); font-size:0.9em; margin-bottom:8px; }
+
+.flashes { list-style:none; padding:0; margin: 8px 0 12px; }
+.flash { padding:10px 12px; border-radius:8px; margin-bottom:8px; font-weight:600; }
+.flash.error { background: rgba(255,0,78,0.08); color: #ff9ab8; border:1px solid rgba(255,0,78,0.12); }
+.flash.info { background: rgba(0,240,255,0.05); color: var(--neon-cyan); border:1px solid rgba(0,240,255,0.08); }
+
+.login-form { display:flex; flex-direction:column; gap:10px; }
+label { font-size:0.9em; color:var(--text-secondary); font-weight:600; }
+.input-field {
+    padding:12px 14px; border-radius:10px; border:1px solid rgba(255,255,255,0.04);
+    background: rgba(10,14,39,0.4); color:var(--text-primary); outline:none; font-size:1em;
+    transition: box-shadow 0.18s ease, transform 0.12s ease;
+}
+.input-field:focus { box-shadow: 0 6px 20px rgba(0,240,255,0.08); transform: translateY(-1px); }
+
+.form-actions { display:flex; gap:12px; margin-top:6px; }
+.button.primary { flex:1; background: linear-gradient(135deg, var(--neon-cyan), var(--neon-green)); color:#071022; }
+.button.ghost { background: transparent; border:1px solid rgba(255,255,255,0.04); color:var(--text-secondary); padding:10px 14px; border-radius:10px; }
+.button { padding:12px 18px; font-weight:700; border-radius:10px; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; }
+
+.panel-footer { margin-top:14px; text-align:center; color:var(--text-secondary); font-size:0.85em; }
+
+@media (max-width: 520px) {
+    .login-panel { width: 92%; padding:18px; }
+    .panel-logo { width:48px; height:48px; }
+}
+
 #delete-btn:hover {
     box-shadow: 0 8px 30px rgba(255, 0, 110, 0.6);
 }
