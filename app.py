@@ -59,6 +59,9 @@ else:
 # --- Initialize Flask-Login ---
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
+# Provide a friendly flash message when Flask-Login redirects an unauthorized user
+login_manager.login_message = 'Please sign in to continue.'
+login_manager.login_message_category = 'info'
 
 
 @login_manager.user_loader
@@ -115,8 +118,10 @@ def login():
 @app.route('/logout')
 @login_required
 def logout():
-    from flask import redirect
+    from flask import redirect, flash
     logout_user()
+    # Inform the UI that the user has logged out so a toast can be shown
+    flash('You have been signed out', 'info')
     return redirect(url_for('hub'))
 
 @app.route('/creation')
