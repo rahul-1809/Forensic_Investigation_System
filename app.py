@@ -2,6 +2,7 @@ import os
 import json
 import random
 from flask import Flask, render_template, request, jsonify, send_from_directory, url_for
+from urllib.parse import urlparse, urljoin
 from werkzeug.utils import secure_filename
 
 # --- App Configuration ---
@@ -11,6 +12,10 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+# Basic security and DB config for authentication
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///auth.db')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # --- Import Your Recognition Logic ---
 from src.database import load_database, build_database_from_photos, save_database
@@ -18,6 +23,11 @@ from src.recognizer import recognize_sketch
 from src.database import load_component_database, find_best_component_match
 from src.preprocess import preprocess_component_image
 from src.embedding import get_embedding
+
+# --- Authentication imports ---
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from src.auth import db as auth_db, User
 
 # --- Load Database on Startup ---
 print("⏳ Loading face database...")
@@ -28,6 +38,16 @@ if not database:
     save_database(database)
 print("✅ Face database loaded.")
 
+# --- Initialize auth (Flask-Login + SQLAlchemy) ---
+print("⏳ Initializing authentication subsystem...")
+auth_db.init_app(app)
+with app.app_context():
+    try:
+        auth_db.create_all()
+        print("✅ Auth DB initialized.")
+    except Exception:
+        print("⚠️ Auth DB init skipped or failed (may already exist).")
+
 # --- Load component database if available ---
 print("⏳ Loading component database (if present)...")
 component_db = load_component_database()
@@ -35,6 +55,18 @@ if component_db:
     print(f"✅ Component database loaded ({len(component_db)} entries).")
 else:
     print("⚠️ No component database found (component_db.pkl). Build it with build_component_db.py if you need component matching.")
+
+# --- Initialize Flask-Login ---
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    try:
+        return auth_db.session.get(User, int(user_id))
+    except Exception:
+        return None
 
 # --- Helper Function ---
 def allowed_file(filename):
@@ -45,11 +77,53 @@ def allowed_file(filename):
 def hub():
     return render_template('hub.html')
 
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    from flask import flash, redirect
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        # Prefer form 'next' (if provided) else querystring. Validate it to avoid open redirects.
+        next_page = request.form.get('next') or request.args.get('next')
+        # Some browsers/clients may send the literal string 'None' when no next was provided.
+        # Treat that as equivalent to no next to avoid redirecting to '/None' (404).
+        if isinstance(next_page, str) and next_page.lower() == 'none':
+            next_page = None
+
+        def is_safe_url(target):
+            # Reject empty or explicit 'none' targets
+            if not target or (isinstance(target, str) and target.lower() == 'none'):
+                return False
+            ref_url = urlparse(request.host_url)
+            test_url = urlparse(urljoin(request.host_url, target))
+            return (test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc)
+        user = auth_db.session.execute(auth_db.select(User).filter_by(username=username)).scalar_one_or_none()
+        if user and user.check_password(password) and user.is_active:
+            login_user(user)
+            # Only redirect to a safe local URL
+            if is_safe_url(next_page):
+                return redirect(next_page)
+            return redirect(url_for('hub'))
+        else:
+            flash('Invalid username or password', 'error')
+    return render_template('login.html')
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    from flask import redirect
+    logout_user()
+    return redirect(url_for('hub'))
+
 @app.route('/creation')
+@login_required
 def creation():
     return render_template('creation.html')
 
 @app.route('/recognition')
+@login_required
 def recognition():
     return render_template('recognition.html')
     
@@ -59,6 +133,7 @@ def uploaded_photo(filename):
 
 # --- API Endpoints ---
 @app.route('/api/recognize', methods=['POST'])
+@login_required
 def api_recognize():
     if 'sketch' not in request.files:
         return jsonify({"error": "No sketch file provided"}), 400
@@ -120,7 +195,9 @@ def api_recognize():
         return jsonify({"match": False, "message": "No confident match found."})
 
 
+
 @app.route('/api/recognize_component', methods=['POST'])
+@login_required
 def api_recognize_component():
     """Recognize a single facial component (eyes, nose, mouth) from a sketch image.
 
@@ -219,6 +296,7 @@ def api_recognize_component():
     return jsonify({"match": False, "message": "No confident component match found."})
 
 @app.route('/api/add_person', methods=['POST'])
+@login_required
 def api_add_person():
     global database
     if 'photo' not in request.files:
@@ -250,5 +328,9 @@ def api_add_person():
     print("✅ Database rebuild complete.")
     return jsonify({"success": True, "message": f"{name} was added to the database."})
 
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Default to port 5000 which is the common development port. You can override
+    # by setting the PORT environment variable if you need a different port.
+    port = int(os.environ.get('PORT', 5000))
+    app.run(debug=True, port=port)
