@@ -401,6 +401,65 @@ body.page-portal {
 }
 
 /* ========================================
+   TOAST / FLASH MESSAGES
+   Simple, unobtrusive notifications used for login success/failure
+   ======================================== */
+#toast-container {
+    position: fixed;
+    top: calc(var(--nav-height) + 18px);
+    right: 18px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none; /* allow clicks through when hidden */
+}
+.toast {
+    pointer-events: auto;
+    min-width: 240px;
+    max-width: 420px;
+    background: rgba(10,14,39,0.9);
+    color: var(--text-primary);
+    padding: 12px 14px;
+    border-radius: 10px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.6), 0 4px 20px rgba(0,240,255,0.08);
+    transform: translateY(-8px) scale(0.98);
+    opacity: 0;
+    transition: all 320ms cubic-bezier(.2,.9,.3,1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-weight: 600;
+}
+.toast.visible { opacity: 1; transform: translateY(0) scale(1); }
+.toast .toast-message { flex: 1; text-align: left; }
+.toast .toast-close {
+    background: transparent;
+    border: none;
+    color: inherit;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0.9;
+}
+.toast.success {
+    border-left: 4px solid var(--neon-green);
+    background: linear-gradient(90deg, rgba(57,255,20,0.06), rgba(10,14,39,0.9));
+    color: #e9ffe9;
+}
+.toast.error {
+    border-left: 4px solid #ff3366;
+    background: linear-gradient(90deg, rgba(255,51,102,0.06), rgba(10,14,39,0.9));
+    color: #ffe9ef;
+}
+
+@media (max-width: 600px) {
+    #toast-container { left: 12px; right: 12px; top: calc(var(--nav-height) + 12px); }
+    .toast { min-width: 180px; max-width: calc(100vw - 36px); }
+}
+
+/* ========================================
    LOGIN PANEL (matches the app theme)
    ======================================== */
 .login-panel {
