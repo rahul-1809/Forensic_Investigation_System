@@ -24,31 +24,8 @@
         </div>
     </nav>
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div id="toast-container">
-                    {% for category, message in messages %}
-                        <div class="toast {{ 'success' if category == 'success' else 'error' }}">
-                            <span class="toast-message">{{ message }}</span>
-                            <button class="toast-close" aria-label="Close">×</button>
-                        </div>
-                    {% endfor %}
-                </div>
-                <script>
-                    (function(){
-                        const container = document.getElementById('toast-container');
-                        if(!container) return;
-                        container.querySelectorAll('.toast').forEach((t, i)=>{
-                            setTimeout(()=> t.classList.add('visible'), 50 + i*200);
-                            const close = t.querySelector('.toast-close');
-                            const remove = ()=> { t.classList.remove('visible'); setTimeout(()=> t.remove(), 400); };
-                            close.addEventListener('click', remove);
-                            setTimeout(remove, 4200 + i*800);
-                        });
-                    })();
-                </script>
-            {% endif %}
-        {% endwith %}
+        {% include '_toasts.html' %}
+        <script src="{{ url_for('static', filename='js/toast.js') }}"></script>
 
     <div class="portal-container">
         <h1>Recognition & Database Portal</h1>
