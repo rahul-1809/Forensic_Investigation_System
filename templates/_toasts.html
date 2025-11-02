@@ -1,12 +1,16 @@
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <div id="toast-container">
-      {% for category, message in messages %}
-        <div class="toast {{ 'success' if category == 'success' else 'error' }}">
-          <span class="toast-message">{{ message }}</span>
-          <button class="toast-close" aria-label="Close">×</button>
-        </div>
-      {% endfor %}
-    </div>
-  {% endif %}
-{% endwith %}
+{# Central toast container and server-side message bridge #}
+<div id="toast-data" style="display:none;">
+	{% with messages = get_flashed_messages(with_categories=true) %}
+		{% if messages %}
+			{% for category, message in messages %}
+				<div class="toast-data" data-category="{{ category }}">{{ message }}</div>
+			{% endfor %}
+		{% endif %}
+	{% endwith %}
+</div>
+
+<div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+{# Load the toast behaviour JS when this partial is included. The script tag is safe to include multiple times because the loader is idempotent. #}
+<script src="{{ url_for('static', filename='js/toast.js') }}"></script>
+

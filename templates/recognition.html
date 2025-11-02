@@ -24,9 +24,6 @@
         </div>
     </nav>
 
-        {% include '_toasts.html' %}
-        <script src="{{ url_for('static', filename='js/toast.js') }}"></script>
-
     <div class="portal-container">
         <h1>Recognition & Database Portal</h1>
 
@@ -86,6 +83,7 @@
 
         
     </div>
+    {% include '_toasts.html' %}
     <script src="{{ url_for('static', filename='js/recognition.js') }}"></script>
     <script>
         (function(){

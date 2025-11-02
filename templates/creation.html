@@ -24,9 +24,6 @@
         </div>
     </nav>
 
-        {% include '_toasts.html' %}
-        <script src="{{ url_for('static', filename='js/toast.js') }}"></script>
-
     <div id="app-container">
         <div id="palette">
             <h1>Features</h1>
@@ -39,6 +36,7 @@
         <button id="save-btn">Save Image</button>
     </div>
 
+    {% include '_toasts.html' %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="{{ url_for('static', filename='js/file-list.js') }}"></script>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>

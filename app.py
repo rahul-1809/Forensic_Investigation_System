@@ -101,6 +101,8 @@ def login():
         user = auth_db.session.execute(auth_db.select(User).filter_by(username=username)).scalar_one_or_none()
         if user and user.check_password(password) and user.is_active:
             login_user(user)
+            # Inform the UI that login succeeded so the client can show a success alert/toast
+            flash('Successfully signed in', 'success')
             # Only redirect to a safe local URL
             if is_safe_url(next_page):
                 return redirect(next_page)

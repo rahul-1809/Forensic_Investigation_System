@@ -320,10 +320,7 @@
         </div>
     </nav>
 
-        {% include '_toasts.html' %}
-        <script src="{{ url_for('static', filename='js/toast.js') }}"></script>
-
-        <div class="container">
+    <div class="container">
         <div class="logo"></div>
         <h1>Forensic Facial Intelligence</h1>
         <p class="subtitle">Advanced Biometric Recognition & Analysis System</p>
@@ -338,7 +335,8 @@
             <div class="feature-badge">⚡ Real-time Analysis</div>
             <div class="feature-badge">🛡️ Secure Database</div>
         </div>
-    </div>
+            {% include '_toasts.html' %}
+            <script>
         <script>
             // small helper to mark the active nav link
             (function(){
@@ -347,6 +345,7 @@
                     if(a.getAttribute('href')===path) a.classList.add('active');
                 });
             })();
+            {# toast.js also loaded by the partial; keep page scripts last #}
         </script>
 </body>
 </html>

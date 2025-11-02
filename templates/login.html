@@ -40,12 +40,8 @@
             <p class="hint">Enter your credentials to access the recognition dashboard.</p>
           </div>
 
-          {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-              {% include '_toasts.html' %}
-              <script src="{{ url_for('static', filename='js/toast.js') }}"></script>
-            {% endif %}
-          {% endwith %}
+          {# Use central toast partial so flashes are shown as toasts #}
+          {% include '_toasts.html' %}
 
           <form method="post" action="{{ url_for('login') }}" class="login-form">
             <label for="username">Username</label>
@@ -77,5 +73,7 @@
           });
       })();
     </script>
+    {# Ensure toast script is loaded (also included by _toasts.html, harmless if duplicated) #}
+    <script src="{{ url_for('static', filename='js/toast.js') }}"></script>
   </body>
 </html>
